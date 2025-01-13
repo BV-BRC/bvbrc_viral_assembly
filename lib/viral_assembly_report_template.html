@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Viral Assembly Report</title>
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:300,400,500,600,700,800,900" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Work Sans', sans-serif;
+            color: #444;
+        }
+
+        header {
+            padding-bottom: 0.5rem;
+        }
+
+        section {
+            margin-bottom: 0.5rem;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0d78ef;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-size: 2em;
+            font-weight: 600;
+        }
+
+        h2 {
+            font-size: 1.45em;
+        }
+
+        h2, h3 {
+            font-weight: 500;
+        }
+
+        .table-header {
+            color: #fff;
+            background: #196E9C;
+            padding: 5px;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 5px;
+        }
+
+        th {
+            border-bottom: 2px solid #196E9C;
+        }
+
+        table {
+            margin: .1in 0 .5in 0;
+            border-collapse: collapse;
+        }
+
+        .med-table {
+            width: 60%;
+            border-bottom: 1px solid #196E9C;
+        }
+
+        .med-table td:first-child { 
+            font-weight: bold;
+        }
+
+        .report-info {
+            text-align: right;
+            margin-right: 30px;
+            font-size: .8em;
+            color: #777;
+        }
+
+        .report-info span {
+            font-weight: 600;
+        }
+
+        .preformatted {
+            white-space: pre-wrap;
+            font-family: monospace;
+            background-color: #f7f7f7;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="report-info">
+            <span>Report Date:</span> {{ report_date }}
+        </div>
+    </header>
+    <h1>Viral Assembly Report</h1>
+
+    {{ quast_section }}
+
+    <section>
+        <h2>Tools Used:</h2>
+        <table class="med-table">
+            <thead class="table-header">
+                <tr>
+                    <th>Tool</th>
+                    <th>Version</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ tools_table }}
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>
+
