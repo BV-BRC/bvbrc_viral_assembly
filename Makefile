@@ -4,6 +4,8 @@ include $(TOP_DIR)/tools/Makefile.common
 DEPLOY_RUNTIME ?= /kb/runtime
 TARGET ?= /kb/deployment
 
+WRAP_PYTHON_TOOL = wrap_python3
+
 APP_SERVICE = app_service
 
 SRC_PERL = $(wildcard scripts/*.pl)
