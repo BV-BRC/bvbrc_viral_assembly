@@ -29,9 +29,9 @@ sub preflight
     print STDERR "preflight viral assembly ", Dumper($params, $app);
 
     return {
-	cpu => 2,
+	cpu => 8,
 	memory => "64G",
-	runtime => 18000,
+	runtime => 21600,
 	storage => 0,
     };
 }
