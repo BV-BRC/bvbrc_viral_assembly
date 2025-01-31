@@ -25,6 +25,8 @@ else:
 
 DEFAULT_STRATEGY = "IRMA"
 DEFAULT_IRMA_MODULE = "FLU"
+MAX_RETRIES = 5
+RETRY_DELAY = 10
 
 def fetch_file_from_ws(ws_path, local_path):
   """Fetch a file from workspace to local path using p3-cp."""
@@ -41,23 +43,28 @@ def fetch_file_from_ws(ws_path, local_path):
 def fetch_fastqs_from_sra(sra_id, temp_dir="/tmp", output_dir="sra_fastqs"):
   os.makedirs(output_dir, exist_ok=True)
   cmd = ["fasterq-dump", "-t", temp_dir, "--outdir", output_dir, "--split-files", "-f", sra_id]
-  try:
-    print(f"Fetching FASTQs for SRA ID {sra_id} with command: {' '.join(cmd)}")
-    subprocess.run(cmd, check=True)
-  except subprocess.CalledProcessError as e:
-    print(f"Error fetching FASTQs for SRA ID {sra_id}: {e}")
-    return None, None
 
-  r1_path = os.path.join(output_dir, f"{sra_id}_1.fastq")
-  r2_path = os.path.join(output_dir, f"{sra_id}_2.fastq")
+  for attempt in range(1, MAX_RETRIES + 1):
+    print(f"Attempt {attempt}: Fetching FASTQs for SRA ID {sra_id} with command: {' '.join(cmd)}")
+    try:
+      subprocess.run(cmd, check=True)
+    except subprocess.CalledProcessError as e:
+      print(f"Error fetching FASTQs for SRA ID {sra_id}: {e}")
+      return None, None
 
-  if os.path.exists(r1_path) and os.path.exists(r2_path):
-    return r1_path, r2_path
-  elif os.path.exists(r1_path):
-    return r1_path, None
-  else:
-    print(f"No valid FASTQ files found for SRA ID {sra_id}.")
-    return None, None
+    # Check if files exist after the command runs
+    r1_path = os.path.join(output_dir, f"{sra_id}_1.fastq")
+    r2_path = os.path.join(output_dir, f"{sra_id}_2.fastq")
+
+    if os.path.exists(r1_path) or os.path.exists(r2_path):
+      return (r1_path if os.path.exists(r1_path) else None,
+              r2_path if os.path.exists(r2_path) else None)
+
+    print(f"FASTQ files not found after attempt {attempt}. Retrying in {RETRY_DELAY} seconds...")
+    time.sleep(retry_delay)
+
+  print(f"No valid FASTQ files found for SRA ID {sra_id}.")
+  return None, None
 
 def concatenate_fasta_files(fasta_dir, output_fasta):
     """
