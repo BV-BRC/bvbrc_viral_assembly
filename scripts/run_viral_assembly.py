@@ -12,8 +12,8 @@ from time import strftime, localtime
 # Determine path to report template
 #
 top = os.getenv("KB_TOP")
-report_deployed = os.path.join(top, "lib2", "viral_assembly_report_template.html")
-report_dev = os.path.join(top, "modules2", "bvbrc_viral_assembly", "lib", "viral_assembly_report_template.html")
+report_deployed = os.path.join(top, "lib", "viral_assembly_report_template.html")
+report_dev = os.path.join(top, "modules", "bvbrc_viral_assembly", "lib", "viral_assembly_report_template.html")
 report_local = os.path.join("/home", "ac.mkuscuog", "git", "dev_container", "modules", "bvbrc_viral_assembly", "lib", "viral_assembly_report_template.html")
 if os.path.exists(report_deployed):
   ASSEMBLY_REPORT_TEMPLATE = report_deployed
