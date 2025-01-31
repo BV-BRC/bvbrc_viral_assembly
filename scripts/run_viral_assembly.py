@@ -193,6 +193,7 @@ def generate_html_report(details):
     # Handle Errors
     errors_section = ""
     if "errors" in details and details["errors"]:
+      '''
       errors_section = """
       <section>
           <h2>Errors</h2>
@@ -202,6 +203,15 @@ def generate_html_report(details):
         errors_section += f"<li>{error}</li>\n"
       errors_section += """
           </ul>
+      </section>
+      """
+      '''
+      errors_section = """
+      <section style='color: #bb0505;'>
+        <h2>Error</h2>
+        <ul>
+          <li>Assembly may have failed due to poor data quality or not having enough reads. We recommend running the FASTQC tool to assess read coverage and quality before retrying the assembly. You can access the FASTQC tool at <a href="https://www.bv-brc.org/app/FastqUtil" target="_blank">BV-BRC Fastq Utilities</a>, and the user guide is available <a href="https://www.bv-brc.org/docs/quick_references/services/fastq_utilities_service.html" target="_blank">here</a>.</li>
+        </ul>
       </section>
       """
 
