@@ -94,6 +94,7 @@ sub process_viral_assembly
     my %suffix_map = (tsv => 'tsv',
                       result => 'tsv',
                       err => 'tsv',
+                      fasta => 'contigs',
                       tre => 'nwk',
                       html => 'html',
                       txt => 'txt',

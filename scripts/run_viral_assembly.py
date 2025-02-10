@@ -260,13 +260,16 @@ if __name__ == "__main__" :
     print("Error: Please provide exactly one of Paired End Library, Single End Librart, or SRR Id.")
     sys.exit(-1)
 
+  # Get the current working directory
+  current_directory = os.getcwd()
+
   # Setup output directory
   output_dir = args.output
   output_dir = os.path.abspath(output_dir)
   if not os.path.exists(output_dir):
     os.mkdir(output_dir)
   os.chdir(output_dir)
-  output_file = os.path.join(output_dir, job_data.get("output_file", "sample"))
+  #output_file = os.path.join(output_dir, job_data.get("output_file", "sample"))
   assembly_output_dir = os.path.join(output_dir, strategy)
 
   report_details = {
@@ -282,8 +285,8 @@ if __name__ == "__main__" :
       sys.exit(-1)
 
     # Fetch files locally
-    local_read1 = os.path.join(output_dir, "read1.fasta")
-    local_read2 = os.path.join(output_dir, "read2.fasta")
+    local_read1 = os.path.join(current_directory, "read1.fasta")
+    local_read2 = os.path.join(current_directory, "read2.fasta")
     if not (fetch_file_from_ws(read1, local_read1) and fetch_file_from_ws(read2, local_read2)):
       print("Error: Failed to fetch paired-end reads.")
       sys.exit(-1)
@@ -298,7 +301,7 @@ if __name__ == "__main__" :
       sys.exit(-1)
 
     # Fetch file locally
-    local_read = os.path.join(output_dir, "read.fasta")
+    local_read = os.path.join(current_directory, "read.fasta")
     if not fetch_file_from_ws(read, local_read):
       print("Error: Failed to fetch single-end read.")
       sys.exit(-1)
@@ -307,14 +310,14 @@ if __name__ == "__main__" :
 
   # Process SRR ID
   elif srr_id:
-    r1, r2 = fetch_fastqs_from_sra(srr_id, output_dir=output_dir)
+    r1, r2 = fetch_fastqs_from_sra(srr_id, output_dir=current_directory)
     if not r1:
       print("Error: Failed to fetch FASTQs for SRR ID.")
       sys.exit(-1)
 
     run_irma(module, r1, r2, output_dir=assembly_output_dir)
 
-  fasta_file = os.path.join(output_dir, output_file, f"{output_file}_all.fasta")
+  fasta_file = os.path.join(current_directory, f"{job_data.get('output_file', 'sample')}_all.fasta")
   is_concatenated = concatenate_fasta_files(assembly_output_dir, fasta_file)
   # Run QUAST on the concatenated FASTA file
   if is_concatenated:
