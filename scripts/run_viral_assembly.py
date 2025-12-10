@@ -9,19 +9,27 @@ import sys
 from time import strftime, localtime
 
 #
-# Determine path to report template
+# Determine paths
 #
-top = os.getenv("KB_TOP")
-report_deployed = os.path.join(top, "lib", "viral_assembly_report_template.html")
-report_dev = os.path.join(top, "modules", "bvbrc_viral_assembly", "lib", "viral_assembly_report_template.html")
-report_local = os.path.join("/home", "ac.mkuscuog", "git", "dev_container", "modules", "bvbrc_viral_assembly", "lib", "viral_assembly_report_template.html")
-if os.path.exists(report_deployed):
-  ASSEMBLY_REPORT_TEMPLATE = report_deployed
-elif os.path.exists(report_dev):
-  ASSEMBLY_REPORT_TEMPLATE = report_dev
-else:
-  ASSEMBLY_REPORT_TEMPLATE = report_local
+def first_existing_path(*paths):
+  for p in paths:
+    if os.path.exists(p):
+      return p
+  return paths[-1]  # fallback
 
+top = os.getenv("KB_TOP")
+
+ASSEMBLY_REPORT_TEMPLATE = first_existing_path(
+    os.path.join(top, "lib", "viral_assembly_report_template.html"),
+    os.path.join(top, "modules", "bvbrc_viral_assembly", "lib", "viral_assembly_report_template.html"),
+    "/home/ac.mkuscuog/git/dev_container/modules/bvbrc_viral_assembly/lib/viral_assembly_report_template.html",
+)
+
+FLU_AD_INIT = first_existing_path(
+    os.path.join(top, "lib", "flu_ad_init.sh"),
+    os.path.join(top, "modules", "bvbrc_viral_assembly", "lib", "flu_ad_init.sh"),
+    "/home/ac.mkuscuog/git/dev_container/modules/bvbrc_viral_assembly/lib/flu_ad_init.sh",
+)
 
 DEFAULT_STRATEGY = "IRMA"
 DEFAULT_IRMA_MODULE = "FLU"
@@ -125,6 +133,8 @@ def run_irma(mode, input_file1, input_file2=None, output_dir="output"):
   if input_file2:
     irma_cmd.append(input_file2)
   irma_cmd.append(output_dir)
+  if mode == "FLU_AD":
+    irma_cmd.extend([" --external-config", FLU_AD_INIT])
 
   try:
     print(f"Running IRMA with command: {' '.join(irma_cmd)}")
