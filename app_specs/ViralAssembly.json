@@ -1,7 +1,7 @@
 {
   "description": "Assemble reads into a set of contigs",
   "id": "ViralAssembly",
-  "label": "Assemble WGS reads",
+  "label": "Assemble viral genomes",
   "parameters": [
     {
       "default": null,
@@ -58,7 +58,7 @@
         "auto",
 	"irma"
       ],
-      "id": "recipe",
+      "id": "strategy",
       "label": "Assembly strategy",
       "required": 0,
       "type": "enum"
@@ -70,20 +70,13 @@
         "CoV",
         "RSV",
         "EBOLA",
-        "FLU_AD"
+        "FLU_AD",
+        "FLU-utr"
       ],
       "id": "module",
       "label": "Virus module",
       "required": 0,
       "type": "enum"
-    },
-    {
-      "default": "5M",
-      "desc": "Estimated genome size (for canu)",
-      "id": "viral_size",
-      "label": "Viral Size",
-      "required": 0,
-      "type": "string"
     },
     {
       "default": null,
