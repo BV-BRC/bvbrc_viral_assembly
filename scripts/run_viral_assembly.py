@@ -52,10 +52,10 @@ def fetch_file_from_ws(ws_path, local_path):
 
 def fetch_fastqs_from_sra(sra_id, temp_dir="/tmp", output_dir="sra_fastqs"):
   os.makedirs(output_dir, exist_ok=True)
-  cmd = ["fasterq-dump", "-t", temp_dir, "--outdir", output_dir, "--split-files", "-f", sra_id]
+  cmd = ["p3-sra", "--id", sra_id, "--out", output_dir]
 
   for attempt in range(1, MAX_RETRIES + 1):
-    print(f"Attempt {attempt}: Fetching FASTQs for SRA ID {sra_id} with command: {' '.join(cmd)}")
+    print(f"Attempt {attempt}: Fetching FASTQs for SRA ID {sra_id} using p3-sra")
     try:
       subprocess.run(cmd, check=True)
     except subprocess.CalledProcessError as e:
@@ -63,12 +63,18 @@ def fetch_fastqs_from_sra(sra_id, temp_dir="/tmp", output_dir="sra_fastqs"):
       return None, None
 
     # Check if files exist after the command runs
-    r1_path = os.path.join(output_dir, f"{sra_id}_1.fastq")
-    r2_path = os.path.join(output_dir, f"{sra_id}_2.fastq")
+    r1 = os.path.join(output_dir, f"{sra_id}_1.fastq")
+    r2 = os.path.join(output_dir, f"{sra_id}_2.fastq")
+    r_single = os.path.join(output_dir, f"{sra_id}.fastq")
 
-    if os.path.exists(r1_path) or os.path.exists(r2_path):
-      return (r1_path if os.path.exists(r1_path) else None,
-              r2_path if os.path.exists(r2_path) else None)
+    # Paired-end case
+    if os.path.exists(r1) or os.path.exists(r2):
+      return (r1 if os.path.exists(r1) else None,
+              r2 if os.path.exists(r2) else None)
+
+    # Single-end case
+    if os.path.exists(r_single):
+      return (r_single, None)
 
     print(f"FASTQ files not found after attempt {attempt}. Retrying in {RETRY_DELAY} seconds...")
     time.sleep(RETRY_DELAY)
