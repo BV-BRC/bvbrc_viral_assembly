@@ -6,6 +6,8 @@ import os
 import shutil
 import subprocess
 import sys
+import time
+import traceback
 from time import strftime, localtime
 
 #
@@ -69,7 +71,7 @@ def fetch_fastqs_from_sra(sra_id, temp_dir="/tmp", output_dir="sra_fastqs"):
               r2_path if os.path.exists(r2_path) else None)
 
     print(f"FASTQ files not found after attempt {attempt}. Retrying in {RETRY_DELAY} seconds...")
-    time.sleep(retry_delay)
+    time.sleep(RETRY_DELAY)
 
   print(f"No valid FASTQ files found for SRA ID {sra_id}.")
   return None, None
@@ -134,7 +136,7 @@ def run_irma(mode, input_file1, input_file2=None, output_dir="output"):
     irma_cmd.append(input_file2)
   irma_cmd.append(output_dir)
   if mode == "FLU_AD":
-    irma_cmd.extend([" --external-config", FLU_AD_INIT])
+    irma_cmd.extend(["--external-config", FLU_AD_INIT])
 
   try:
     print(f"Running IRMA with command: {' '.join(irma_cmd)}")
@@ -267,7 +269,7 @@ if __name__ == "__main__" :
   # Ensure only one of the inputs is provided
   inputs_provided = sum(bool(x) for x in [paired_end_lib, single_end_lib, srr_id])
   if inputs_provided != 1:
-    print("Error: Please provide exactly one of Paired End Library, Single End Librart, or SRR Id.")
+    print("Error: Please provide exactly one of Paired End Library, Single End Library, or SRR Id.")
     sys.exit(-1)
 
   # Get the current working directory
