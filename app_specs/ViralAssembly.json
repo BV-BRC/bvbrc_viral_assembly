@@ -71,7 +71,8 @@
         "RSV",
         "EBOLA",
         "FLU_AD",
-        "FLU-utr"
+        "FLU-utr",
+        "FLU-minion"
       ],
       "id": "module",
       "label": "Virus module",
