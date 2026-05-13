@@ -267,7 +267,7 @@ def _parse_string_list(v) -> Optional[List[str]]:
         items = [str(x).strip() for x in v if str(x).strip()]
         return items or None
     if isinstance(v, str):
-        items = [x.strip() for x in v.split(";") if x.strip()]
+        items = [x.strip() for x in v.split(",") if x.strip()]
         return items or None
     return None
 
