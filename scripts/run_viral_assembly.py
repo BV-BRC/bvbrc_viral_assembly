@@ -167,7 +167,7 @@ def _parse_string_list(v):
     vals = [str(x).strip() for x in v if str(x).strip()]
     return vals or None
   if isinstance(v, str):
-    vals = [x.strip() for x in v.split(";") if x.strip()]
+    vals = [x.strip() for x in v.split(",") if x.strip()]
     return vals or None
   return None
 
@@ -208,7 +208,7 @@ def _resolve_reference_inputs(job_data):
     if not tokens:
       raise ValueError(
         "reference_genbank_accession is required for GenBank references "
-        "(e.g. 'NC_045512.2' or 'NC_045512.2;MN908947.3')."
+        "(e.g. 'NC_045512.2' or 'NC_045512.2,MN908947.3')."
       )
     return reference_type, tokens
 
